@@ -3,324 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scriptie — werkruimte</title>
+  <title>scriptie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-mark">§</span>
-      <div>
-        <h1>scriptie</h1>
-        <p class="brand-sub">werkruimte</p>
-      </div>
-    </div>
-    <nav class="tabs" role="tablist">
-      <button class="tab active" data-tab="vandaag" role="tab">vandaag</button>
-      <button class="tab" data-tab="stelling" role="tab">stelling</button>
-      <button class="tab" data-tab="gesprekken" role="tab">gesprekken</button>
-      <button class="tab" data-tab="praktijk" role="tab">praktijk</button>
-      <button class="tab" data-tab="instellingen" role="tab">⚙</button>
-    </nav>
-  </header>
+  <div class="workspace">
 
-  <main>
-    <!-- ========== VANDAAG ========== -->
-    <section class="panel" id="panel-vandaag" data-panel="vandaag">
-      <div class="vandaag-grid">
-        <!-- Current stelling banner -->
-        <article class="card stelling-banner" id="stelling-banner">
-          <header class="card-header">
-            <span class="kicker">huidige stelling</span>
-            <span class="stelling-version" id="stelling-version">v0</span>
-          </header>
-          <div class="stelling-text" id="stelling-display">
-            Nog geen stelling geformuleerd. Klik op <em>stelling</em> om te beginnen.
-          </div>
-          <div class="card-footer">
-            <button class="btn-link" data-go="stelling">bewerken →</button>
-          </div>
-        </article>
-
-        <!-- Daily suggestion -->
-        <article class="card suggestion-card">
-          <header class="card-header">
-            <span class="kicker">vandaag, 5–10 minuten</span>
-          </header>
-          <div class="suggestion-body">
-            <h2 id="suggestion-title">Klein begin</h2>
-            <p id="suggestion-detail" class="muted">Geef me een moment…</p>
-          </div>
-          <div class="suggestion-actions">
-            <button class="btn-primary" id="btn-accept-suggestion">aan de slag</button>
-            <button class="btn-ghost" id="btn-skip-suggestion">andere suggestie</button>
-            <button class="btn-text" id="btn-pass-suggestion">vandaag overslaan</button>
-          </div>
-        </article>
-
-        <!-- Momentum strip -->
-        <article class="card momentum-card">
-          <header class="card-header">
-            <span class="kicker">momentum — laatste 14 dagen</span>
-          </header>
-          <div class="momentum-strip" id="momentum-strip"></div>
-          <div class="momentum-stats" id="momentum-stats"></div>
-        </article>
-
-        <!-- Recent activity -->
-        <article class="card activity-card">
-          <header class="card-header">
-            <span class="kicker">recente activiteit</span>
-          </header>
-          <ul class="activity-list" id="activity-list">
-            <li class="muted small">Nog geen activiteit. Begin met de stelling of plak een gesprek.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- ========== STELLING ========== -->
-    <section class="panel hidden" id="panel-stelling" data-panel="stelling">
-      <div class="stelling-wrap">
-        <header class="section-header">
-          <h2>Stelling</h2>
-          <p class="muted">Je centrale claim. Verandert vanzelf — bewaar elke versie.</p>
-        </header>
-
-        <article class="card stelling-current" id="stelling-current">
-          <div class="stelling-display-big" id="stelling-display-big">Nog niets geformuleerd.</div>
-          <div class="stelling-meta">
-            <span id="stelling-version-big" class="kicker">v0</span>
-            <span id="stelling-date" class="muted small">—</span>
-          </div>
-        </article>
-
-        <div class="row">
-          <button class="btn-primary" id="btn-edit-stelling">nieuwe versie schrijven</button>
+    <!-- ============ LEFT: Claude Code-style chat ============ -->
+    <aside class="left-panel" id="left-panel">
+      <header class="cc-header">
+        <div class="cc-logo">
+          <span class="cc-mark">▗ ▗   ▖ ▖</span>
+          <span class="cc-mark">▘▘ ▝▝</span>
         </div>
-
-        <h3 class="section-sub">Versiegeschiedenis</h3>
-        <ol class="version-list" id="version-list">
-          <li class="muted small">Geen vorige versies.</li>
-        </ol>
-      </div>
-
-      <!-- Modal: edit stelling -->
-      <div class="modal hidden" id="modal-stelling">
-        <div class="modal-content">
-          <header class="modal-header">
-            <h3 id="modal-stelling-title">Nieuwe versie van je stelling</h3>
-            <button class="icon-btn" id="btn-close-stelling">✕</button>
-          </header>
-          <p class="muted small">Je vorige versies blijven bewaard. Schrijf zoals je nu denkt.</p>
-          <textarea id="stelling-input" rows="6" placeholder="Wanneer uitvoering goedkoop wordt, verschuift…"></textarea>
-          <div class="modal-actions">
-            <button class="btn-primary" id="btn-save-stelling">opslaan als nieuwe versie</button>
-            <button class="btn-ghost" id="btn-cancel-stelling">annuleren</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== GESPREKKEN ========== -->
-    <section class="panel hidden" id="panel-gesprekken" data-panel="gesprekken">
-      <header class="section-header">
-        <div>
-          <h2>Gesprekken</h2>
-          <p class="muted">Plak je gesprekken met Claude (of anderen). Thema's worden stil herkend.</p>
-        </div>
-        <button class="btn-primary" id="btn-new-gesprek">+ nieuw gesprek</button>
-      </header>
-
-      <div class="row toolbar">
-        <input type="search" id="gesprek-search" placeholder="zoek in gesprekken…" />
-        <select id="gesprek-filter">
-          <option value="">alle thema's</option>
-        </select>
-      </div>
-
-      <ul class="gesprek-list" id="gesprek-list">
-        <li class="empty muted">Nog geen gesprekken. Klik op <em>+ nieuw gesprek</em> om er een te plakken.</li>
-      </ul>
-
-      <!-- Modal: new/edit gesprek -->
-      <div class="modal hidden" id="modal-gesprek">
-        <div class="modal-content modal-wide">
-          <header class="modal-header">
-            <h3 id="modal-gesprek-title">Nieuw gesprek</h3>
-            <button class="icon-btn" id="btn-close-gesprek">✕</button>
-          </header>
-
-          <label>
-            <span class="kicker">titel</span>
-            <input type="text" id="gesprek-titel" placeholder="bv. multi-modal düzenek brainstorm" />
-          </label>
-
-          <label>
-            <span class="kicker">datum</span>
-            <input type="date" id="gesprek-datum" />
-          </label>
-
-          <label>
-            <span class="kicker">bron <small class="muted">(optioneel)</small></span>
-            <input type="text" id="gesprek-bron" placeholder="Claude Code / Claude.ai / iemand anders" />
-          </label>
-
-          <label>
-            <span class="kicker">inhoud — plak hier</span>
-            <textarea id="gesprek-inhoud" rows="16" placeholder="Plak de volledige conversatie hier. Markdown, ascii, alles is OK."></textarea>
-          </label>
-
-          <div class="tags-preview hidden" id="tags-preview">
-            <span class="kicker">automatisch herkende thema's</span>
-            <div class="tag-row" id="tag-row"></div>
-          </div>
-
-          <div class="modal-actions">
-            <button class="btn-primary" id="btn-save-gesprek">opslaan</button>
-            <button class="btn-ghost" id="btn-cancel-gesprek">annuleren</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal: view gesprek -->
-      <div class="modal hidden" id="modal-view-gesprek">
-        <div class="modal-content modal-wide">
-          <header class="modal-header">
-            <div>
-              <h3 id="view-titel">—</h3>
-              <p class="muted small" id="view-meta">—</p>
-            </div>
-            <button class="icon-btn" id="btn-close-view">✕</button>
-          </header>
-          <div class="tag-row" id="view-tags"></div>
-          <pre class="gesprek-content" id="view-inhoud"></pre>
-          <div class="modal-actions">
-            <button class="btn-ghost" id="btn-edit-view">bewerken</button>
-            <button class="btn-danger-ghost" id="btn-delete-view">verwijderen</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== PRAKTIJK ========== -->
-    <section class="panel hidden" id="panel-praktijk" data-panel="praktijk">
-      <header class="section-header">
-        <div>
-          <h2>Praktijk-log</h2>
-          <p class="muted">Elke sessie. Wat probeerde je, wat werkte, wat leerde je, wat zegt het over je stelling.</p>
-        </div>
-        <button class="btn-primary" id="btn-new-praktijk">+ nieuwe sessie</button>
-      </header>
-
-      <ul class="praktijk-list" id="praktijk-list">
-        <li class="empty muted">Nog geen praktijk-entries. Begin met je eerste experiment.</li>
-      </ul>
-
-      <!-- Modal: new praktijk -->
-      <div class="modal hidden" id="modal-praktijk">
-        <div class="modal-content modal-wide">
-          <header class="modal-header">
-            <h3 id="modal-praktijk-title">Nieuwe praktijk-sessie</h3>
-            <button class="icon-btn" id="btn-close-praktijk">✕</button>
-          </header>
-
-          <label>
-            <span class="kicker">titel</span>
-            <input type="text" id="praktijk-titel" placeholder="bv. Illustrator JSX-bridge eerste werkende versie" />
-          </label>
-
-          <label>
-            <span class="kicker">datum</span>
-            <input type="date" id="praktijk-datum" />
-          </label>
-
-          <label>
-            <span class="kicker">wat probeerde ik?</span>
-            <textarea id="praktijk-probeerde" rows="3" placeholder="Beschrijf het experiment kort."></textarea>
-          </label>
-
-          <label>
-            <span class="kicker">wat werkte / werkte niet?</span>
-            <textarea id="praktijk-werkte" rows="3" placeholder="Concreet. Wat zag je gebeuren?"></textarea>
-          </label>
-
-          <label>
-            <span class="kicker">wat leerde ik?</span>
-            <textarea id="praktijk-leerde" rows="3" placeholder="Het inzicht. Eén of twee zinnen volstaan."></textarea>
-          </label>
-
-          <label class="implicatie-field">
-            <span class="kicker"><strong>implicatie voor je stelling</strong></span>
-            <textarea id="praktijk-implicatie" rows="3" placeholder="Bevestigt / nuanceert / weerlegt je stelling? Hoe?"></textarea>
-          </label>
-
-          <label>
-            <span class="kicker">thema's <small class="muted">(automatisch herkend, je kan bewerken)</small></span>
-            <input type="text" id="praktijk-themas" placeholder="#articulatie #partner" />
-          </label>
-
-          <div class="modal-actions">
-            <button class="btn-primary" id="btn-save-praktijk">opslaan</button>
-            <button class="btn-ghost" id="btn-cancel-praktijk">annuleren</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal: view praktijk -->
-      <div class="modal hidden" id="modal-view-praktijk">
-        <div class="modal-content modal-wide">
-          <header class="modal-header">
-            <div>
-              <h3 id="view-praktijk-titel">—</h3>
-              <p class="muted small" id="view-praktijk-meta">—</p>
-            </div>
-            <button class="icon-btn" id="btn-close-view-praktijk">✕</button>
-          </header>
-          <div class="tag-row" id="view-praktijk-tags"></div>
-          <div class="praktijk-detail" id="view-praktijk-detail"></div>
-          <div class="modal-actions">
-            <button class="btn-danger-ghost" id="btn-delete-praktijk">verwijderen</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========== INSTELLINGEN ========== -->
-    <section class="panel hidden" id="panel-instellingen" data-panel="instellingen">
-      <header class="section-header">
-        <div>
-          <h2>Instellingen</h2>
-          <p class="muted">Thema's, backup, en wat de werkruimte je vraagt.</p>
+        <div class="cc-title">
+          <div>Claude Code</div>
+          <div class="cc-sub">scriptie · /Users/admin</div>
         </div>
       </header>
 
-      <h3 class="section-sub">Thema's</h3>
-      <p class="muted small">Sleutelwoorden waarmee gesprekken en praktijk-entries automatisch worden getagd.</p>
-      <ul class="thema-list" id="thema-list"></ul>
-      <div class="row">
-        <input type="text" id="new-tema-tag" placeholder="#nieuw-thema" />
-        <input type="text" id="new-tema-keywords" placeholder="trefwoord1, trefwoord2, …" />
-        <button class="btn-ghost" id="btn-add-tema">toevoegen</button>
+      <div class="cc-stream" id="cc-stream">
+        <div class="cc-welcome">
+          <p>Welcome to scriptie.</p>
+          <p class="cc-muted">Hier komt je gesprek met Claude. Typ hieronder of plak een eerder gesprek.</p>
+        </div>
       </div>
 
-      <h3 class="section-sub">Backup</h3>
-      <div class="row">
-        <button class="btn-ghost" id="btn-export">⬇ exporteer alles (JSON)</button>
-        <button class="btn-ghost" id="btn-import">⬆ importeer</button>
-        <input type="file" id="import-file" accept="application/json" hidden />
+      <form class="cc-input-area" id="cc-form" autocomplete="off">
+        <span class="cc-prompt">❯</span>
+        <textarea
+          id="cc-input"
+          rows="1"
+          placeholder="schrijf je gedachte… ⏎ om te versturen, shift+⏎ voor nieuwe regel"
+        ></textarea>
+      </form>
+    </aside>
+
+    <!-- ============ RIGHT: bare placeholder for now ============ -->
+    <main class="right-panel">
+      <div class="right-placeholder">
+        <p class="right-kicker">scriptie</p>
+        <p class="right-muted">hier komen je notities</p>
       </div>
-      <p class="muted small">Sla je werk wekelijks ergens op. Localstorage is fragiel.</p>
+    </main>
 
-      <h3 class="section-sub danger-h3">Gevarenzone</h3>
-      <button class="btn-danger" id="btn-reset">alles wissen</button>
-    </section>
-  </main>
-
-  <div id="toast" class="toast hidden"></div>
+  </div>
 
   <script src="app.js"></script>
 </body>
