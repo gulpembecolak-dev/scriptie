@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scriptie · kick-start</title>
+  <title>scriptie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Iowan+Old+Style&family=JetBrains+Mono:wght@400;500&display=swap" />
@@ -15,54 +15,98 @@
       <span class="brand-mark">§</span>
       <span class="brand-name">scriptie</span>
     </div>
-    <div class="progress">
+    <nav class="topnav">
+      <button class="topnav-btn active" data-view="vandaag">vandaag</button>
+      <button class="topnav-btn" data-view="dossiers">dossiers</button>
+    </nav>
+    <div class="progress" id="progress-wrap">
       <span class="progress-text" id="progress-text">0 / 30</span>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
   </header>
 
   <main>
-    <article class="card" id="day-card">
-      <header class="card-head">
-        <span class="day-tag" id="day-tag">DAG —</span>
-        <span class="day-date" id="day-date">—</span>
+    <!-- ============ VANDAAG ============ -->
+    <section class="view" id="view-vandaag">
+      <article class="card" id="day-card">
+        <header class="card-head">
+          <span class="day-tag" id="day-tag">DAG —</span>
+          <span class="day-date" id="day-date">—</span>
+        </header>
+
+        <h1 class="day-topic" id="day-topic">—</h1>
+
+        <section class="day-source" id="day-source">
+          <span class="kicker">vandaag lees / luister je</span>
+          <a class="source-link" id="source-link" href="#" target="_blank" rel="noopener">—</a>
+          <p class="source-meta" id="source-meta"></p>
+        </section>
+
+        <section class="day-question">
+          <span class="kicker">vraag voor jezelf</span>
+          <p id="day-question-text">—</p>
+        </section>
+
+        <section class="day-note">
+          <span class="kicker">één regel voor jezelf <span class="muted small">(optioneel)</span></span>
+          <textarea
+            id="day-note"
+            rows="2"
+            placeholder="één gedachte, één zin — als er iets blijft hangen"
+          ></textarea>
+        </section>
+
+        <footer class="card-actions">
+          <button class="btn-primary" id="btn-done">klaar voor vandaag ✓</button>
+          <span class="muted small" id="done-state"></span>
+        </footer>
+      </article>
+
+      <nav class="day-nav">
+        <button class="nav-btn" id="btn-prev">← vorige</button>
+        <button class="nav-btn" id="btn-jump-today">vandaag</button>
+        <button class="nav-btn" id="btn-next">volgende →</button>
+      </nav>
+
+      <div class="day-grid" id="day-grid"></div>
+    </section>
+
+    <!-- ============ DOSSIERS ============ -->
+    <section class="view hidden" id="view-dossiers">
+      <header class="dossier-head">
+        <div class="dossier-switch">
+          <select id="dossier-select" class="dossier-select"></select>
+          <button class="nav-btn" id="btn-rename-dossier" title="naam wijzigen">✎</button>
+          <button class="nav-btn" id="btn-delete-dossier" title="dossier verwijderen">🗑</button>
+        </div>
+        <button class="btn-primary" id="btn-new-dossier">+ nieuw dossier</button>
       </header>
 
-      <h1 class="day-topic" id="day-topic">—</h1>
+      <div class="dossier-empty hidden" id="dossier-empty">
+        <p class="muted">Nog geen dossiers. Maak je eerste met <strong>+ nieuw dossier</strong>.</p>
+      </div>
 
-      <section class="day-source" id="day-source">
-        <span class="kicker">vandaag lees / luister je</span>
-        <a class="source-link" id="source-link" href="#" target="_blank" rel="noopener">—</a>
-        <p class="source-meta" id="source-meta"></p>
-      </section>
+      <div class="dossier-body" id="dossier-body">
+        <div class="add-row">
+          <button class="add-btn" data-add="text">+ tekst</button>
+          <button class="add-btn" data-add="file">+ bestand / afbeelding</button>
+          <span class="muted small" id="dossier-meta"></span>
+        </div>
 
-      <section class="day-question">
-        <span class="kicker">vraag voor jezelf</span>
-        <p id="day-question-text">—</p>
-      </section>
+        <!-- inline text adder -->
+        <div class="adder hidden" id="adder-text">
+          <textarea id="adder-text-input" rows="4" placeholder="schrijf, plak — alles welkom"></textarea>
+          <div class="adder-actions">
+            <button class="btn-primary" id="adder-text-save">opslaan</button>
+            <button class="nav-btn" id="adder-text-cancel">annuleren</button>
+          </div>
+        </div>
 
-      <section class="day-note">
-        <span class="kicker">één regel voor jezelf <span class="muted small">(optioneel)</span></span>
-        <textarea
-          id="day-note"
-          rows="2"
-          placeholder="één gedachte, één zin — als er iets blijft hangen"
-        ></textarea>
-      </section>
+        <input type="file" id="file-picker" hidden multiple />
 
-      <footer class="card-actions">
-        <button class="btn-primary" id="btn-done">klaar voor vandaag ✓</button>
-        <span class="muted small" id="done-state"></span>
-      </footer>
-    </article>
-
-    <nav class="day-nav">
-      <button class="nav-btn" id="btn-prev">← vorige</button>
-      <button class="nav-btn" id="btn-jump-today">vandaag</button>
-      <button class="nav-btn" id="btn-next">volgende →</button>
-    </nav>
-
-    <div class="day-grid" id="day-grid"></div>
+        <ul class="item-list" id="item-list"></ul>
+      </div>
+    </section>
   </main>
 
   <div id="toast" class="toast hidden"></div>
