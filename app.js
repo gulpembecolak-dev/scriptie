@@ -312,10 +312,12 @@ function renderDossiers() {
     saveMeta();
   }
 
-  // Render dossier tabs — all visible, click to switch
+  // Render dossier tabs — all visible. Click handler is delegated on parent.
   for (const d of dossiers) {
     const tab = document.createElement("button");
+    tab.type = "button";
     tab.className = "dossier-tab";
+    tab.dataset.dossierId = d.id;
     if (d.id === meta.activeDossierId) tab.classList.add("active");
     const itemCount = (d.items || []).length;
     tab.innerHTML = `
@@ -323,7 +325,6 @@ function renderDossiers() {
       <span class="dossier-tab-count">${itemCount}</span>
     `;
     tab.title = d.title || "(zonder titel)";
-    tab.addEventListener("click", () => setActiveDossier(d.id));
     tabsEl.appendChild(tab);
   }
 
@@ -623,6 +624,14 @@ document.addEventListener("keydown", (e) => {
 $("#btn-new-dossier").addEventListener("click", newDossier);
 $("#btn-rename-dossier").addEventListener("click", renameDossier);
 $("#btn-delete-dossier").addEventListener("click", deleteDossier);
+
+// Delegated click handler for dossier tabs (survives re-renders)
+$("#dossier-tabs").addEventListener("click", (e) => {
+  const tab = e.target.closest(".dossier-tab");
+  if (!tab) return;
+  const id = tab.dataset.dossierId;
+  if (id) setActiveDossier(id);
+});
 
 $$('.add-btn').forEach((b) => {
   b.addEventListener("click", () => {
