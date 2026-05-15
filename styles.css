@@ -527,6 +527,98 @@ main {
 }
 .file-name:hover { color: var(--accent-soft); text-decoration: underline; }
 
+/* ============ discreet footer ============ */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  margin-top: 3rem;
+}
+.footer-link {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  padding: 6px 12px;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+.footer-link:hover { opacity: 1; color: var(--ink-soft); }
+
+/* ============ backup modal ============ */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(15, 10, 5, 0.45);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 4rem 1rem;
+  z-index: 200;
+  overflow-y: auto;
+}
+.modal-content {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 12px 40px rgba(40,30,15,0.18);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.modal-header h3 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: 0;
+}
+.backup-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0 0.5rem;
+  flex-wrap: wrap;
+}
+.modal-sep {
+  border: none;
+  border-top: 1px solid var(--line-soft);
+  margin: 1.5rem 0 1rem;
+}
+.modal-danger-h {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin: 0 0 0.5rem;
+  font-weight: 500;
+}
+.btn-ghost {
+  background: var(--bg-card);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.btn-ghost:hover { background: var(--bg-soft); border-color: var(--accent); }
+.btn-danger {
+  background: var(--bg-card);
+  color: #9B3A2A;
+  border: 1px solid #9B3A2A;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.btn-danger:hover { background: #9B3A2A; color: white; }
+
 /* ============ mobile ============ */
 @media (max-width: 700px) {
   .topbar { padding: 0.85rem 1rem; flex-direction: column; gap: 0.6rem; align-items: stretch; }

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Iowan+Old+Style&family=JetBrains+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
 </head>
 <body>
   <header class="topbar">
@@ -113,7 +113,36 @@
     </section>
   </main>
 
+  <footer class="footer">
+    <button class="footer-link" id="btn-open-backup">back-up</button>
+  </footer>
+
+  <!-- Backup modal -->
+  <div class="modal hidden" id="modal-backup">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h3>back-up & beheer</h3>
+        <button class="icon-btn" id="btn-close-backup">✕</button>
+      </header>
+      <p class="muted small">Je werk leeft alleen in deze browser. Maak af en toe een back-up — zet 'm in iCloud of Drive.</p>
+
+      <div class="backup-actions">
+        <button class="btn-primary" id="btn-export-all">⬇ exporteer alles (JSON)</button>
+        <button class="btn-ghost" id="btn-import-all">⬆ importeer back-up</button>
+        <input type="file" id="import-file-picker" accept="application/json" hidden />
+      </div>
+
+      <p class="muted small">Bevat: je dossiers (tekst + bestanden + afbeeldingen), je dag-notities en voortgang.</p>
+
+      <hr class="modal-sep" />
+
+      <h4 class="modal-danger-h">gevarenzone</h4>
+      <button class="btn-danger" id="btn-reset-all">alles wissen</button>
+      <p class="muted small">Wis alle dossiers, dag-notities en bestanden uit deze browser. Onomkeerbaar.</p>
+    </div>
+  </div>
+
   <div id="toast" class="toast hidden"></div>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

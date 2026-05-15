@@ -646,5 +646,167 @@ $("#file-picker").addEventListener("change", (e) => {
 $("#adder-text-save").addEventListener("click", saveTextItem);
 $("#adder-text-cancel").addEventListener("click", cancelTextItem);
 
+/* ============ backup: export / import / reset ============ */
+
+function blobToDataURL(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+function dataURLToBlob(dataURL) {
+  const [meta, b64] = dataURL.split(",");
+  const mime = (meta.match(/:(.*?);/) || [, "application/octet-stream"])[1];
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+async function exportAll() {
+  toast("Back-up bezig…", 3000);
+  const exportedDossiers = [];
+  for (const d of dossiers) {
+    const cleanDossier = { id: d.id, title: d.title, createdAt: d.createdAt, updatedAt: d.updatedAt, items: [] };
+    for (const item of (d.items || [])) {
+      const e = { id: item.id, type: item.type, createdAt: item.createdAt };
+      if (item.type === "text") {
+        e.content = item.content;
+      } else if (item.blobId) {
+        try {
+          const blob = await getBlob(item.blobId);
+          if (blob) {
+            e.blobData = await blobToDataURL(blob);
+            e.filename = item.filename;
+            e.size = item.size;
+            e.mime = item.mime;
+            if (item.caption) e.caption = item.caption;
+          }
+        } catch (err) {
+          console.warn("blob skip", err);
+        }
+      }
+      cleanDossier.items.push(e);
+    }
+    exportedDossiers.push(cleanDossier);
+  }
+  const data = {
+    version: 1,
+    app: "scriptie",
+    exportedAt: new Date().toISOString(),
+    kickState,
+    dossiers: exportedDossiers,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `scriptie-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast("Geëxporteerd");
+}
+
+async function importAll(file) {
+  let text;
+  try { text = await file.text(); }
+  catch { toast("Kon bestand niet lezen"); return; }
+  let data;
+  try { data = JSON.parse(text); }
+  catch { toast("Geen geldig back-up bestand"); return; }
+  if (!data.dossiers && !data.kickState) {
+    toast("Bestand bevat geen scriptie-data");
+    return;
+  }
+  if (!confirm("Importeren overschrijft je huidige werk. Doorgaan?")) return;
+
+  // restore kick-start
+  if (data.kickState) {
+    kickState = { currentDay: null, notes: {}, done: [], ...data.kickState };
+    saveKickState();
+  }
+
+  // restore dossiers
+  if (Array.isArray(data.dossiers)) {
+    const newDossiers = [];
+    for (const d of data.dossiers) {
+      const fresh = { id: d.id || uid(), title: d.title || "geïmporteerd", items: [], createdAt: d.createdAt || Date.now(), updatedAt: Date.now() };
+      for (const item of (d.items || [])) {
+        const ni = { id: item.id || uid(), type: item.type, createdAt: item.createdAt || Date.now() };
+        if (item.type === "text") {
+          ni.content = item.content || "";
+        } else if (item.blobData) {
+          try {
+            const newBlobId = uid();
+            const blob = dataURLToBlob(item.blobData);
+            await putBlob(newBlobId, blob);
+            ni.blobId = newBlobId;
+            ni.filename = item.filename || "bestand";
+            ni.size = item.size || blob.size;
+            ni.mime = item.mime || blob.type;
+            if (item.caption) ni.caption = item.caption;
+          } catch (err) {
+            console.warn("blob restore skip", err);
+            continue;
+          }
+        }
+        fresh.items.push(ni);
+      }
+      newDossiers.push(fresh);
+    }
+    dossiers = newDossiers;
+    saveDossiers();
+  }
+
+  closeBackup();
+  renderKick();
+  renderDossiers();
+  toast("Geïmporteerd");
+}
+
+async function resetAll() {
+  if (!confirm("Echt alles wissen? Maak eerst een back-up.")) return;
+  if (!confirm("Heel zeker? Dit kan niet ongedaan gemaakt worden.")) return;
+
+  // delete all blobs
+  for (const d of dossiers) {
+    for (const item of (d.items || [])) {
+      if (item.blobId) { try { await deleteBlob(item.blobId); } catch {} }
+    }
+  }
+  // clear localStorage scriptie keys
+  Object.values(KEY).forEach((k) => localStorage.removeItem(k));
+  dossiers = [];
+  meta = { activeDossierId: null, currentView: "vandaag" };
+  kickState = { currentDay: null, notes: {}, done: [] };
+  saveKickState(); saveDossiers(); saveMeta();
+  closeBackup();
+  switchView("vandaag");
+  toast("Alles gewist");
+}
+
+function openBackup() { $("#modal-backup").classList.remove("hidden"); }
+function closeBackup() { $("#modal-backup").classList.add("hidden"); }
+
+$("#btn-open-backup").addEventListener("click", openBackup);
+$("#btn-close-backup").addEventListener("click", closeBackup);
+$("#btn-export-all").addEventListener("click", exportAll);
+$("#btn-import-all").addEventListener("click", () => $("#import-file-picker").click());
+$("#import-file-picker").addEventListener("change", (e) => {
+  if (e.target.files && e.target.files[0]) importAll(e.target.files[0]);
+  e.target.value = "";
+});
+$("#btn-reset-all").addEventListener("click", resetAll);
+
+// close modal on backdrop / Escape
+$("#modal-backup").addEventListener("click", (e) => {
+  if (e.target.id === "modal-backup") closeBackup();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("#modal-backup").classList.contains("hidden")) closeBackup();
+});
+
 /* ============ init ============ */
 switchView(meta.currentView || "vandaag");
