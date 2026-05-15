@@ -309,25 +309,85 @@ main {
 /* ============ dossiers ============ */
 .dossier-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   flex-wrap: wrap;
 }
-.dossier-switch { display: flex; align-items: center; gap: 0.4rem; flex: 1; min-width: 0; }
-.dossier-select {
+
+/* Visible tab pills — all dossiers visible at once */
+.dossier-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   flex: 1;
-  font-family: var(--font-serif);
-  font-size: 1.15rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg-card);
-  color: var(--ink);
   min-width: 0;
 }
-.dossier-select:focus { outline: none; border-color: var(--accent); }
+.dossier-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  max-width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.dossier-tab:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.dossier-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.dossier-tab-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dossier-tab-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--bg-soft);
+  color: var(--muted);
+  padding: 1px 6px;
+  border-radius: 8px;
+  min-width: 18px;
+  text-align: center;
+}
+.dossier-tab.active .dossier-tab-count {
+  background: rgba(255, 255, 255, 0.22);
+  color: white;
+}
+.btn-new-dossier { flex: 0 0 auto; }
+
+/* dossier action row (rename / delete) — below tabs, above add bar */
+.dossier-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.25rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.dossier-actions-right { display: flex; gap: 0.2rem; }
+.dossier-actions .icon-btn {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  text-transform: lowercase;
+  color: var(--muted);
+}
+.dossier-actions .icon-btn:hover { color: var(--ink); }
 
 .dossier-empty {
   text-align: center;

@@ -293,17 +293,18 @@ function activeDossier() {
 }
 
 function renderDossiers() {
-  // Switcher
-  const sel = $("#dossier-select");
-  sel.innerHTML = "";
+  const tabsEl = $("#dossier-tabs");
+  tabsEl.innerHTML = "";
+
   if (dossiers.length === 0) {
     $("#dossier-empty").classList.remove("hidden");
     $("#dossier-body").classList.add("hidden");
-    sel.innerHTML = '<option>geen dossiers</option>';
+    $("#dossier-actions").classList.add("hidden");
     return;
   }
   $("#dossier-empty").classList.add("hidden");
   $("#dossier-body").classList.remove("hidden");
+  $("#dossier-actions").classList.remove("hidden");
 
   // Ensure activeDossierId points to existing
   if (!dossiers.some((d) => d.id === meta.activeDossierId)) {
@@ -311,18 +312,28 @@ function renderDossiers() {
     saveMeta();
   }
 
+  // Render dossier tabs — all visible, click to switch
   for (const d of dossiers) {
-    const opt = document.createElement("option");
-    opt.value = d.id;
-    opt.textContent = d.title || "(zonder titel)";
-    if (d.id === meta.activeDossierId) opt.selected = true;
-    sel.appendChild(opt);
+    const tab = document.createElement("button");
+    tab.className = "dossier-tab";
+    if (d.id === meta.activeDossierId) tab.classList.add("active");
+    const itemCount = (d.items || []).length;
+    tab.innerHTML = `
+      <span class="dossier-tab-title">${escapeHtml(d.title || "(zonder titel)")}</span>
+      <span class="dossier-tab-count">${itemCount}</span>
+    `;
+    tab.title = d.title || "(zonder titel)";
+    tab.addEventListener("click", () => setActiveDossier(d.id));
+    tabsEl.appendChild(tab);
   }
 
   const d = activeDossier();
   if (!d) return;
 
-  $("#dossier-meta").textContent = `${(d.items || []).length} stuk${(d.items || []).length === 1 ? "" : "s"} · aangepast ${fmtTime(d.updatedAt || d.createdAt)}`;
+  const count = (d.items || []).length;
+  const metaTxt = `${count} stuk${count === 1 ? "" : "s"} · aangepast ${fmtTime(d.updatedAt || d.createdAt)}`;
+  $("#dossier-meta-top").textContent = metaTxt;
+  $("#dossier-meta").textContent = metaTxt;
 
   renderItems(d);
 }
@@ -612,7 +623,6 @@ document.addEventListener("keydown", (e) => {
 $("#btn-new-dossier").addEventListener("click", newDossier);
 $("#btn-rename-dossier").addEventListener("click", renameDossier);
 $("#btn-delete-dossier").addEventListener("click", deleteDossier);
-$("#dossier-select").addEventListener("change", (e) => setActiveDossier(e.target.value));
 
 $$('.add-btn').forEach((b) => {
   b.addEventListener("click", () => {
