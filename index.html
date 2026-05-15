@@ -3,55 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scriptie</title>
+  <title>scriptie · kick-start</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Iowan+Old+Style&family=JetBrains+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="workspace">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <span class="brand-name">scriptie</span>
+    </div>
+    <div class="progress">
+      <span class="progress-text" id="progress-text">0 / 30</span>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+  </header>
 
-    <!-- ============ LEFT: Claude Code-style chat ============ -->
-    <aside class="left-panel" id="left-panel">
-      <header class="cc-header">
-        <div class="cc-logo">
-          <span class="cc-mark">▗ ▗   ▖ ▖</span>
-          <span class="cc-mark">▘▘ ▝▝</span>
-        </div>
-        <div class="cc-title">
-          <div>Claude Code</div>
-          <div class="cc-sub">scriptie · /Users/admin</div>
-        </div>
+  <main>
+    <article class="card" id="day-card">
+      <header class="card-head">
+        <span class="day-tag" id="day-tag">DAG —</span>
+        <span class="day-date" id="day-date">—</span>
       </header>
 
-      <div class="cc-stream" id="cc-stream">
-        <div class="cc-welcome">
-          <p>Welcome to scriptie.</p>
-          <p class="cc-muted">Hier komt je gesprek met Claude. Typ hieronder of plak een eerder gesprek.</p>
-        </div>
-      </div>
+      <h1 class="day-topic" id="day-topic">—</h1>
 
-      <form class="cc-input-area" id="cc-form" autocomplete="off">
-        <span class="cc-prompt">❯</span>
+      <section class="day-source" id="day-source">
+        <span class="kicker">vandaag lees / luister je</span>
+        <a class="source-link" id="source-link" href="#" target="_blank" rel="noopener">—</a>
+        <p class="source-meta" id="source-meta"></p>
+      </section>
+
+      <section class="day-question">
+        <span class="kicker">vraag voor jezelf</span>
+        <p id="day-question-text">—</p>
+      </section>
+
+      <section class="day-note">
+        <span class="kicker">één regel voor jezelf <span class="muted small">(optioneel)</span></span>
         <textarea
-          id="cc-input"
-          rows="1"
-          placeholder="schrijf je gedachte… ⏎ om te versturen, shift+⏎ voor nieuwe regel"
+          id="day-note"
+          rows="2"
+          placeholder="één gedachte, één zin — als er iets blijft hangen"
         ></textarea>
-      </form>
-    </aside>
+      </section>
 
-    <!-- ============ RIGHT: bare placeholder for now ============ -->
-    <main class="right-panel">
-      <div class="right-placeholder">
-        <p class="right-kicker">scriptie</p>
-        <p class="right-muted">hier komen je notities</p>
-      </div>
-    </main>
+      <footer class="card-actions">
+        <button class="btn-primary" id="btn-done">klaar voor vandaag ✓</button>
+        <span class="muted small" id="done-state"></span>
+      </footer>
+    </article>
 
-  </div>
+    <nav class="day-nav">
+      <button class="nav-btn" id="btn-prev">← vorige</button>
+      <button class="nav-btn" id="btn-jump-today">vandaag</button>
+      <button class="nav-btn" id="btn-next">volgende →</button>
+    </nav>
 
+    <div class="day-grid" id="day-grid"></div>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
   <script src="app.js"></script>
 </body>
 </html>
